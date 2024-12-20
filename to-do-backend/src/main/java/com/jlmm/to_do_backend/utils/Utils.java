@@ -2,7 +2,7 @@ package com.jlmm.to_do_backend.utils;
 
 import java.util.concurrent.TimeUnit;
 
-public class Functions {
+public class Utils {
 	public static String milliecondsToMMSSFormat(long milliseconds) {		
 		long MM = TimeUnit.MILLISECONDS.toMinutes(milliseconds);
 		long SS = TimeUnit.MILLISECONDS.toSeconds(milliseconds) % 60;

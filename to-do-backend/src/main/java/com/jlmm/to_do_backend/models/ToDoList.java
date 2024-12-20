@@ -15,7 +15,7 @@ public class ToDoList {
 		toDos = new ArrayList<>();
 	}
 	
-	public static void increaseList(ToDo toDo) {
+	public void increaseList(ToDo toDo) {
 		instance.toDos.add(toDo);
 		instance.count++;
 		instance.possiblePages = (int)Math.ceil(instance.toDos.size() / 10.0);
@@ -35,10 +35,6 @@ public class ToDoList {
 		this.possiblePages = toDos.size() == 0
 				? 1
 				: (int)Math.ceil(instance.toDos.size() / 10.0);
-	}
-
-	public static ToDoList getInstance() {
-		return instance;
 	}
 	
 	public int getPossiblepages() {
