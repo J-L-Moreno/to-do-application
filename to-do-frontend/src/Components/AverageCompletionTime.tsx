@@ -37,7 +37,7 @@ function timeMetric(averageTime: string | null, priority?: string){
 
     if(averageTime != null){
         if(priority != null) text = `${priority}: `;
-        text += `${averageTime} minutes`
+        text += averageTime;
     }
 
     return text;

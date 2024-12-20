@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RestController
 public class ToDoController {
+	private final ToDoService service;
+
 	@Autowired
-	ToDoService service;
+	public ToDoController(ToDoService service) {
+		this.service = service;
+	}
 	
 	@PostMapping("/todos")
 	public ResponseEntity<Object> createToDo(@RequestBody ToDo toDo) {
