@@ -1,0 +1,7 @@
+services:
+  flights-frontend:
+    container_name: to-do-frontend
+    image: to-do-frontend:latest
+    build: .
+    ports:
+      - "5173:5173"
