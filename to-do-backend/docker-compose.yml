@@ -1,0 +1,7 @@
+services:
+  to-do-backend:
+    container_name: to-do-backend
+    image: to-do-backend:latest
+    build: .
+    ports:
+      - "9090:9090"

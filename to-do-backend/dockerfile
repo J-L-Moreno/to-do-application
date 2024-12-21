@@ -1,0 +1,7 @@
+FROM openjdk:22
+
+COPY target/to-do-backend-0.0.1-SNAPSHOT.jar to-do-backend.jar
+
+EXPOSE 9090
+
+ENTRYPOINT ["java", "-jar", "to-do-backend.jar"]
