@@ -16,7 +16,6 @@ type Props = {
 }
 
 export function ToDosTable(props: Props){
-    console.log(props.toDos)
     return(
         <Box component="section" sx={{ p: 2, border: '1px solid black', borderRadius:2}}>
             <Table size='small' aria-label="To do table">
@@ -42,8 +41,7 @@ export function ToDosTable(props: Props){
                     props.toDos.map((toDo: ToDo) =>(
                         <ToDoTableCell 
                             key={toDo.id} toDo={toDo}
-                            refreshToDos={props.refreshToDos}
-                            generalCheck={props.generalCheck}/>
+                            refreshToDos={props.refreshToDos}/>
                     ))}
                 </TableBody>
             </Table>

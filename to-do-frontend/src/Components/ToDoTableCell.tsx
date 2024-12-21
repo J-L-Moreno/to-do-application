@@ -1,11 +1,10 @@
 import { TableRow, TableCell, Checkbox, Button } from "@mui/material";
 import { ToDo } from "../Models/Models";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { deleteToDo, toDoDone, toDoUndone } from "../Providers/ToDosInfo";
 import EditToDo from "./EditToDo";
 
 type Props = {
-    generalCheck: boolean,
     toDo: ToDo,
     refreshToDos: () => void
 }
@@ -13,19 +12,13 @@ type Props = {
 export function ToDoTableCell(props: Props){
     const [isDone, setIsDone] = useState(props.toDo.done);
 
-    useEffect(
-        ()=>{
-            if(props.generalCheck == true) setIsDone(true);
-        },
-        []
-    );
-
     let dueDateString;
     if (props.toDo.dueDate != null) {
         const dueDate = new Date(props.toDo.dueDate);
         const [month, day, year] = dueDate.toLocaleDateString().split('/');
         dueDateString = `${year}/${month}/${day}`;
     }
+
     return(
         <TableRow key={props.toDo.id}>
             <TableCell width={1}><Checkbox checked={isDone} onChange={onIsDoneChange} /></TableCell>
@@ -40,22 +33,21 @@ export function ToDoTableCell(props: Props){
         </TableRow>
     );
 
-    async function onIsDoneChange(event: any){
+    async function onIsDoneChange(event: React.ChangeEvent<HTMLInputElement>) {
         setIsDone(event.target.checked);
-
-        if(event.target.checked){
+    
+        if (event.target.checked) {
             await toDoDone(props.toDo.id);
         } else {
             await toDoUndone(props.toDo.id);
         }
-
+    
         props.refreshToDos();
     }
-
-    async function onDeleteToDo(id: number){
-        let res;
-        await deleteToDo(id).then(value => res = value);
-
-        if(res) props.refreshToDos();
+    
+    async function onDeleteToDo(id: number) {
+        const res = await deleteToDo(id);
+    
+        if (res) props.refreshToDos();
     }
 }

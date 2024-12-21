@@ -32,11 +32,11 @@ export function App(){
       <Header/>
       <SearchControlls 
         text={nameFilter}
-        onNewText={(event: any) => onTextChange(event)}
+        onNewText={onTextChange}
         priority={priorityFilter}
-        onNewPriority={(event: any) => onPriorityChange(event)}
+        onNewPriority={onPriorityChange}
         state={doneFilter}
-        onNewState={(event: any) => onStateChange(event)}
+        onNewState={onStateChange}
         onSearch={onSearch}
       />
       <NewToDo onToDoCreated={onToDoCreated}/>
@@ -71,35 +71,31 @@ export function App(){
     setGeneralCheck(false)
   }
 
-  function setSortByPriorityAsc(){
-    setSortByPriority(true);
-    getToDos(page, sortByDueDate, true, priorityFilter, doneFilter, nameFilter).then(data => setToDosInfo(data));
+  function setSortByPriorityAsc() {
+    setSortBy('priority', true);
+  }
+  
+  function setSortByPriorityDes() {
+    setSortBy('priority', false);
+  }
+  
+  function setSortByDueDateAsc() {
+    setSortBy('dueDate', true);
+  }
+  
+  function setSortByDueDateDes() {
+    setSortBy('dueDate', false);
   }
 
-  function setSortByPriorityDes(){
-    setSortByPriority(false);
-    getToDos(page, sortByDueDate, false, priorityFilter, doneFilter, nameFilter).then(data => setToDosInfo(data));
-  }
-
-  function setSortByDueDateAsc(){
-    setSortByDueDate(true);
-    getToDos(page, true, sortByPriority, priorityFilter, doneFilter, nameFilter).then(data => setToDosInfo(data));
-  }
-
-  function setSortByDueDateDes(){
-    setSortByDueDate(false);
-    getToDos(page, false, sortByPriority, priorityFilter, doneFilter, nameFilter).then(data => setToDosInfo(data));
-  }
-
-  function onTextChange(event: any){
+  function onTextChange(event: React.ChangeEvent<HTMLInputElement>) {
     setNameFilter(event.target.value);
   }
 
-  function onPriorityChange(event: any){
-    setPriorityFilter(event.target.value);
+  function onPriorityChange(event: React.ChangeEvent<{ value: unknown }>) {
+    setPriorityFilter(event.target.value as number);
   }
 
-  function onStateChange(event: any){
+  function onStateChange(event: React.ChangeEvent<{ value: unknown }>) {
     if(event.target.value == 1)setDoneFilter(true);
     if(event.target.value == 0)setDoneFilter(false);
     if(event.target.value == -1)setDoneFilter(undefined);
@@ -110,8 +106,7 @@ export function App(){
     setGeneralCheck(false);
   }
 
-  function onPageChange(event: React.ChangeEvent<unknown>, value: number){
-    console.log(event);
+  function onPageChange(_event: React.ChangeEvent<unknown>, value: number){
     setPage(value);
     getToDos(value, sortByDueDate, sortByPriority, priorityFilter, doneFilter, nameFilter).then(data => setToDosInfo(data));
     setGeneralCheck(false);
@@ -130,5 +125,15 @@ export function App(){
 
   function refreshToDos(){
     getToDos(page, sortByDueDate, sortByPriority, priorityFilter, doneFilter, nameFilter).then(data => setToDosInfo(data));
+  }
+
+  function setSortBy(field: 'priority' | 'dueDate', asc: boolean) {
+    if (field === 'priority') {
+      setSortByPriority(asc);
+    } else {
+      setSortByDueDate(asc);
+    }
+    getToDos(page, field === 'dueDate' ? asc : sortByDueDate, field === 'priority' ? asc : sortByPriority, priorityFilter, doneFilter, nameFilter)
+      .then(data => setToDosInfo(data));
   }
 }

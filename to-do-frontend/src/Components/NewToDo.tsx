@@ -15,12 +15,12 @@ export default function NewToDo(props: any){
     const handleClose = () => {
         setOpen(false);
         setName(undefined);
-        setPriority(undefined);
+        setPriority(1);
         setDueDate(undefined);
     }
 
     const [name, setName] = useState<string>();
-    const [priority, setPriority] = useState<number>();
+    const [priority, setPriority] = useState<number>(1);
     const [dueDate, setDueDate] = useState<Dayjs | null>();
 
     return (
@@ -75,20 +75,24 @@ export default function NewToDo(props: any){
         </>
     );
 
-    async function onCreateToDo(){
-        if(name == undefined || priority == undefined){
-            console.log('cancell');
-            handleClose();
+    async function onCreateToDo() {
+
+        if (!name || name.trim() === "") {
+            window.alert("The name of the to-do cannot be blank.");
             return;
         }
-
-        let res;
-        await createToDo(name, priority, dueDate).then(value => res = value);
-
-        if(res){
+    
+        if (name.length > 120) {
+            window.alert("The name of the to-do cannot exceed 120 characters.");
+            return;
+        }
+    
+        const res = await createToDo(name, priority, dueDate);
+    
+        if (res) {
             props.onToDoCreated();
         }
-
+    
         handleClose();
     }
 
@@ -97,7 +101,6 @@ export default function NewToDo(props: any){
     }
     
     function onDueDateChange(newDueDate: dayjs.Dayjs | null){
-        console.log(newDueDate?.toDate().toISOString());
         setDueDate(newDueDate);
     }
 

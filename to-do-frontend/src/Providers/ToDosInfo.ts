@@ -2,7 +2,7 @@ import { ApiUrl, todos } from "../Env/ApiConsts";
 import axios from "axios";
 import { ToDosInfo } from "../Models/Models";
 
-export async function createToDo(name: string, priority: number, dueDate?: any): Promise<boolean>{
+export async function createToDo(name: string, priority: number, dueDate?: any): Promise<boolean> {
   type RequestBody = {
     text: string | undefined,
     priority: number | undefined,
@@ -10,23 +10,22 @@ export async function createToDo(name: string, priority: number, dueDate?: any):
     dueDate?: string | undefined
   }
 
-  let currentDateTime: string = new Date().toISOString();
-    try{
-        const url = `${ApiUrl}${todos}`
-        const body: RequestBody = {
-            text : name,
-            priority : priority,
-            creationDate : currentDateTime,
-            dueDate : dueDate?.toDate().toISOString()
-        };
-        const response = await axios.post(url, body);
-        console.log(response);
+  const currentDateTime: string = new Date().toISOString();
+  const url = `${ApiUrl}${todos}`;
+  const body: RequestBody = {
+    text: name,
+    priority: priority,
+    creationDate: currentDateTime,
+    dueDate: dueDate ? new Date(dueDate).toISOString() : undefined
+  };
 
-        return true;
-    } catch(error) {
-        console.error();
-        return false;
-    }
+  try {
+    await axios.post(url, body);
+    return true;
+  } catch (error) {
+    console.error('Error creating ToDo:', error);
+    return false;
+  }
 }
 
 export async function getToDos(
@@ -37,81 +36,87 @@ export async function getToDos(
   doneFilter?: boolean,
   nameFilter?: string
 ){
-  let url = `${ApiUrl}${todos}?page=${page}`;
+  const url = new URL(`${ApiUrl}${todos}`);
+  url.searchParams.append('page', page.toString());
 
-  try{
-    if(sortByDueDate != undefined) url = url.concat(`&sortByDueDate=${sortByDueDate}`);
-    if(sortByPriority != undefined) url = url.concat(`&sortByPriority=${sortByPriority}`);
-    if(priorityFilter != undefined && priorityFilter != -1) url = url.concat(`&priorityFilter=${priorityFilter}`);
-    if(doneFilter != undefined) url = url.concat(`&doneFilter=${doneFilter}`);
-    if(nameFilter != undefined) url = url.concat(`&nameFilter=${nameFilter}`);
+  const params: Record<string, any> = {
+    sortByDueDate,
+    sortByPriority,
+    priorityFilter: priorityFilter !== undefined && priorityFilter !== -1 ? priorityFilter : undefined,
+    doneFilter,
+    nameFilter
+  };
 
-    console.log(url)
-
-    const resp = await axios.get(url);
-
-    console.log(resp.data)
-    
-    const toDosInfo: ToDosInfo = {
-        possiblePages : resp.data.possiblePages,
-        searchPages : resp.data.searchPages,
-        toDos : resp.data.toDos,
-        timeMetrics : resp.data.timeMetrics
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined) {
+      url.searchParams.append(key, value.toString());
     }
+  });
+
+  try {
+    const response = await axios.get(url.toString());
+    const { possiblePages, searchPages, toDos, timeMetrics } = response.data;
+
+    const toDosInfo: ToDosInfo = {
+      possiblePages,
+      searchPages,
+      toDos,
+      timeMetrics
+    };
 
     return toDosInfo;
-  } catch(error){
-    console.error();
+  } catch (error) {
+    console.error('Error fetching ToDos:', error);
   }
 }
 
-export async function toDoDone(id: number){
-  try{
-    const url = `${ApiUrl}${todos}/${id}/done`;
+export async function toDoDone(id: number): Promise<boolean> {
+  const url = `${ApiUrl}${todos}/${id}/done`;
+  try {
     await axios.post(url);
     return true;
-  } catch(error) {
-    console.error();
+  } catch (error) {
+    console.error('Error marking ToDo as done:', error);
     return false;
   }
 }
 
-export async function toDoUndone(id: number){
-  try{
-    const url = `${ApiUrl}${todos}/${id}/undone`;
+export async function toDoUndone(id: number): Promise<boolean> {
+  const url = `${ApiUrl}${todos}/${id}/undone`;
+
+  try {
     await axios.put(url);
     return true;
-  } catch(error) {
-    console.error();
+  } catch (error) {
+    console.error('Error marking ToDo as undone:', error);
     return false;
   }
 }
 
-export async function editToDo(id: number, name: string, priority: number, dueDate?: string | undefined): Promise<boolean> {
+export async function editToDo(id: number, name: string, priority: number, dueDate?: string): Promise<boolean> {
   const url = `${ApiUrl}${todos}/${id}`;
   const body = {
-    text : name,
-    dueDate : dueDate,
-    priority : priority
-  }
+    text: name,
+    dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
+    priority: priority
+  };
 
-  try{
+  try {
     await axios.put(url, body);
     return true;
-  } catch(error){
-    console.error()
+  } catch (error) {
+    console.error('Error editing ToDo:', error);
     return false;
   }
 }
 
-export async function deleteToDo(id: number):Promise<boolean>{
+export async function deleteToDo(id: number): Promise<boolean> {
   const url = `${ApiUrl}${todos}/${id}`;
-  
-  try{
+  try {
     await axios.delete(url);
     return true;
-  } catch(error){
-    console.error();
+  } catch (error) {
+    console.error('Error deleting ToDo:', error);
     return false;
   }
 }

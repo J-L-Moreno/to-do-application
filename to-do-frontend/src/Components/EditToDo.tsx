@@ -87,25 +87,26 @@ export default function EditToDo(props: Props){
         </>
     );
 
-    async function onEditToDo(){
-        if(name == undefined || name == "" || priority == undefined){
-            console.log('cancell');
-            setOpen(false);
+    async function onEditToDo() {
+        
+        if (!name || name.trim() === "") {
+            window.alert("The name of the to-do cannot be blank.");
             return;
         }
-
-        let dueDateToRequest = undefined;
-        if(dayjs(dueDate).isValid()){
-            dueDateToRequest = dueDate?.toISOString();
+    
+        if (name.length > 120) {
+            window.alert("The name of the to-do cannot exceed 120 characters.");
+            return;
         }
-        
-        let res;
-        await editToDo(props.toDo.id, name, priority, dueDateToRequest).then((value) => res = value);
-
-        if(res){
+    
+        const dueDateToRequest = dayjs(dueDate).isValid() ? dueDate?.toISOString() : undefined;
+    
+        const res = await editToDo(props.toDo.id, name, priority!, dueDateToRequest);
+    
+        if (res) {
             props.onToDoEdited();
         }
-
+    
         setOpen(false);
     }
 

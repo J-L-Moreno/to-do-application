@@ -16,10 +16,12 @@
     "@fontsource/roboto": "^5.1.0",
     "@mui/material": "^6.1.0",
     "@mui/x-date-pickers": "^7.17.0",
+    "@reduxjs/toolkit": "^2.5.0",
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
