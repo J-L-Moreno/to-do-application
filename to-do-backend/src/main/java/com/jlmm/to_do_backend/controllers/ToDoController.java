@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
+@RequestMapping("/todos")
 public class ToDoController {
 	private final ToDoService service;
 
@@ -16,12 +17,12 @@ public class ToDoController {
 		this.service = service;
 	}
 	
-	@PostMapping("/todos")
+	@PostMapping("")
 	public ResponseEntity<Object> createToDo(@RequestBody ToDo toDo) {
 		return service.createToDo(toDo);
 	}
 	
-	@GetMapping("/todos")
+	@GetMapping("")
 	public ResponseEntity<Object> getToDos(
 	@RequestParam int page,
 	@RequestParam(required = false) Boolean sortByDueDate,
@@ -33,22 +34,22 @@ public class ToDoController {
 		return service.getToDos(page, sortByDueDate, sortByPriority, priorityFilter, doneFilter, nameFilter);
 	}
 	
-	@PutMapping("/todos/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateToDo(@PathVariable int id, @RequestBody ToDo toDoData){
 		return service.updateToDo(id, toDoData);
 	}
 	
-	@DeleteMapping("/todos/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteToDo(@PathVariable int id){
 		return service.deleteToDo(id);
 	}
 	
-	@PostMapping("/todos/{id}/done")
+	@PostMapping("/{id}/done")
 	public ResponseEntity<Object> toDoDone(@PathVariable int id){
 		return service.toDoDone(id);
 	}
 	
-	@PutMapping("/todos/{id}/undone")
+	@PutMapping("/{id}/undone")
 	public ResponseEntity<Object> toDoUndone(@PathVariable int id){
 		return service.toDoUndone(id);
 	}
