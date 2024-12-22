@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ToDoList {
 	private int count = 0;
-	int possiblePages = 1;
+	private int possiblePages = 1;
 	private List<ToDo> toDos = new ArrayList<>();
 	
 //	public static ToDoList instance = new ToDoList();
